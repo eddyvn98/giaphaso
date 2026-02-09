@@ -1,0 +1,7 @@
+{
+  "name": "Gia Phả Số (Digital Family Tree)",
+  "description": "A mobile-first, culturally adapted Vietnamese family tree application for visualizing and preserving multi-generational history.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
