@@ -19,7 +19,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install @supabase/supabase-js dotenv
+        run: npm install @supabase/supabase-js
 
       - name: Run Keep Alive Script
         env:

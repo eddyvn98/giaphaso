@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Calendar, Info } from 'lucide-react';
-import { DateInfo } from '../../types';
-import { getZodiacYear, getComplementaryDate } from '../../utils/lunar';
+import { DateInfo } from '@/types/types';
+import { getZodiacYear, getComplementaryDate } from '@/utils/lunar';
 
 interface DateCardProps {
   label: string;
@@ -49,10 +49,58 @@ const DateCard: React.FC<DateCardProps> = ({ label, field, dateInfo, isEditing, 
       </div>
 
       {isEditing ? (
-        <div className="space-y-3">
-          <input type="date" value={currentInfo.date ? currentInfo.date.split('T')[0] : ''}
-            onChange={(e) => handleDateChange(e.target.value)}
-            className="w-full font-bold text-stone-800 text-base outline-none bg-stone-50 p-3 rounded-xl border border-stone-200 focus:border-heritage-red/40" />
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[8px] font-bold text-stone-400 px-1 uppercase">Ngày</label>
+              <input
+                type="number"
+                placeholder="DD"
+                min="1"
+                max="31"
+                value={currentInfo.date ? new Date(currentInfo.date).getDate() : ''}
+                onChange={(e) => {
+                  const d = new Date(currentInfo.date || new Date());
+                  d.setDate(parseInt(e.target.value) || 1);
+                  handleDateChange(d.toISOString().split('T')[0]);
+                }}
+                className="w-full font-bold text-stone-800 text-center text-sm outline-none bg-stone-50 p-3 rounded-xl border border-stone-200 focus:border-heritage-red/40"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[8px] font-bold text-stone-400 px-1 uppercase">Tháng</label>
+              <input
+                type="number"
+                placeholder="MM"
+                min="1"
+                max="12"
+                value={currentInfo.date ? new Date(currentInfo.date).getMonth() + 1 : ''}
+                onChange={(e) => {
+                  const d = new Date(currentInfo.date || new Date());
+                  d.setMonth((parseInt(e.target.value) || 1) - 1);
+                  handleDateChange(d.toISOString().split('T')[0]);
+                }}
+                className="w-full font-bold text-stone-800 text-center text-sm outline-none bg-stone-50 p-3 rounded-xl border border-stone-200 focus:border-heritage-red/40"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[8px] font-bold text-stone-400 px-1 uppercase">Năm</label>
+              <input
+                type="number"
+                placeholder="YYYY"
+                min="1000"
+                max="2100"
+                value={currentInfo.date ? new Date(currentInfo.date).getFullYear() : ''}
+                onChange={(e) => {
+                  const d = new Date(currentInfo.date || new Date());
+                  d.setFullYear(parseInt(e.target.value) || new Date().getFullYear());
+                  handleDateChange(d.toISOString().split('T')[0]);
+                }}
+                className="w-full font-bold text-stone-800 text-center text-sm outline-none bg-stone-50 p-3 rounded-xl border border-stone-200 focus:border-heritage-red/40"
+              />
+            </div>
+          </div>
+
           {currentInfo.date && (
             <div className="flex items-start gap-2 bg-heritage-gold/5 p-3 rounded-xl border border-heritage-gold/10">
               <Info size={14} className="text-heritage-gold mt-0.5 flex-shrink-0" />

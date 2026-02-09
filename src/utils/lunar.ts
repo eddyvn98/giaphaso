@@ -1,5 +1,5 @@
 
-import { DateInfo } from '../types';
+import { DateInfo } from '@/types/types';
 
 const THIEN_CAN = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
 const DIA_CHI = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
@@ -21,15 +21,15 @@ export const getZodiacYear = (year: number): string => {
  */
 export const formatDate = (dateInfo?: DateInfo): string => {
   if (!dateInfo || !dateInfo.date) return 'Chưa cập nhật';
-  
+
   const dateObj = new Date(dateInfo.date);
   const day = dateObj.getDate().toString().padStart(2, '0');
   const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
   const year = dateObj.getFullYear();
   const zodiac = getZodiacYear(year);
-  
+
   const mainDate = `${day}/${month}/${year}`;
-  
+
   if (dateInfo.type === 'lunar') {
     return `${mainDate} (Âm lịch - Năm ${zodiac})`;
   }
@@ -40,18 +40,18 @@ export const formatDate = (dateInfo?: DateInfo): string => {
  * Trả về thông tin ngày đối chiếu (Mô phỏng)
  */
 export const getComplementaryDate = (dateInfo?: DateInfo): string => {
-    if (!dateInfo || !dateInfo.date) return '';
-    const dateObj = new Date(dateInfo.date);
-    
-    // Giả định lệch 1 tháng/vài ngày để minh họa đối chiếu AL/DL
-    const altDate = new Date(dateObj);
-    if (dateInfo.type === 'solar') {
-        altDate.setMonth(altDate.getMonth() - 1);
-        altDate.setDate(altDate.getDate() - 2);
-        return `${altDate.getDate().toString().padStart(2, '0')}/${(altDate.getMonth() + 1).toString().padStart(2, '0')}/${altDate.getFullYear()} (Âm lịch)`;
-    } else {
-        altDate.setMonth(altDate.getMonth() + 1);
-        altDate.setDate(altDate.getDate() + 2);
-        return `${altDate.getDate().toString().padStart(2, '0')}/${(altDate.getMonth() + 1).toString().padStart(2, '0')}/${altDate.getFullYear()} (Dương lịch)`;
-    }
+  if (!dateInfo || !dateInfo.date) return '';
+  const dateObj = new Date(dateInfo.date);
+
+  // Giả định lệch 1 tháng/vài ngày để minh họa đối chiếu AL/DL
+  const altDate = new Date(dateObj);
+  if (dateInfo.type === 'solar') {
+    altDate.setMonth(altDate.getMonth() - 1);
+    altDate.setDate(altDate.getDate() - 2);
+    return `${altDate.getDate().toString().padStart(2, '0')}/${(altDate.getMonth() + 1).toString().padStart(2, '0')}/${altDate.getFullYear()} (Âm lịch)`;
+  } else {
+    altDate.setMonth(altDate.getMonth() + 1);
+    altDate.setDate(altDate.getDate() + 2);
+    return `${altDate.getDate().toString().padStart(2, '0')}/${(altDate.getMonth() + 1).toString().padStart(2, '0')}/${altDate.getFullYear()} (Dương lịch)`;
+  }
 };

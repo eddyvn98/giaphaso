@@ -1,4 +1,4 @@
-import { supabase } from '../supabase';
+import { supabase } from '@/services/supabase';
 import { Person, Relationship } from '@/types/types';
 
 export const fetchFamilyData = async () => {
@@ -22,6 +22,8 @@ export const fetchFamilyData = async () => {
         branch: p.branch,
         order: p.generation,
         bio: p.description,
+        dob: p.birth_date ? { date: p.birth_date, type: 'solar' } : undefined,
+        dod: p.death_date ? { date: p.death_date, type: 'solar' } : undefined,
         images: [],
     }));
 

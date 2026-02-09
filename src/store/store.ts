@@ -37,6 +37,10 @@ interface AppState {
   updatePerson: (id: string, data: Partial<Person>) => Promise<void>;
   deletePerson: (id: string) => Promise<void>;
   getStats: () => { total: number; deceased: number; generations: number };
+
+  // Mobile Interaction
+  interactionNodeId: string | null;
+  setInteractionNodeId: (id: string | null) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -47,6 +51,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   selectedPersonId: null,
   meId: localStorage.getItem('family_tree_me_id'),
   highlightedNodeIds: new Set(),
+  interactionNodeId: null,
 
   routeNodeIds: [],
   isRouteMode: false,
@@ -56,7 +61,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   visibleGenerations: 5,
 
   initialize: async () => {
-    set({ isLoading: true, error: null });
+    // Chỉ hiện loading khi chưa có dữ liệu để tránh unmount component gây mất vị trí
+    if (get().people.length === 0) {
+      set({ isLoading: true, error: null });
+    } else {
+      set({ error: null });
+    }
+
     try {
       const { people, relationships } = await fetchFamilyData();
       set({ people, relationships, isLoading: false });
@@ -77,6 +88,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ meId: id });
   },
 
+  setInteractionNodeId: (id) => set({ interactionNodeId: id }),
   setRouteNodes: (ids) => set({ routeNodeIds: ids }),
   toggleRouteMode: (active) => set({ isRouteMode: active, highlightedNodeIds: new Set() }),
   clearRoute: () => set({ routeNodeIds: [], highlightedNodeIds: new Set() }),
@@ -113,7 +125,17 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   updatePerson: async (id, data) => {
-    // Implement service for update if needed
-    await get().initialize();
+    try {
+      // Optimistic update (optional but good for UX, though here we just await)
+      // For now, let's just wait for server confirmation to avoid complexity
+
+      // Filter out undefined values to avoid sending empty updates if not needed, 
+      // but the service handles it.
+      await import('@/services/family/mutateFamily').then(m => m.updateFamilyMember(id, data));
+
+      await get().initialize();
+    } catch (err: any) {
+      set({ error: err.message });
+    }
   }
 }));

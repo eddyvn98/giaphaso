@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Plus } from 'lucide-react';
-import { Person } from '../../types';
+import { Person } from '@/types/types';
 
 interface GalleryProps {
   person: Person;

@@ -1,108 +1,80 @@
-
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Gia Phả Số</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reactflow@11.11.4/dist/style.css" />
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              'heritage-red': '#741B1B', 
-              'heritage-gold': '#B08D3E', 
-              'paper-bg': '#FDFBF7',
-              'stone-text': '#1F2937',
-              'male-blue': {
-                'light': '#F0F7FF',
-                'border': '#1E3A8A', 
-                'solid': '#1E3A8A'  
-              },
-              'female-pink': {
-                'light': '#FFF5F7',
-                'border': '#9D174D', 
-                'solid': '#9D174D'  
-              }
-            },
-            fontFamily: {
-              serif: ['Playfair Display', 'serif'],
-              sans: ['Inter', 'sans-serif'],
-            },
-          }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Gia Phả Số</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reactflow@11.11.4/dist/style.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'heritage-red': '#741B1B',
+            'heritage-gold': '#B08D3E',
+            'paper-bg': '#FDFBF7',
+            'stone-text': '#1F2937',
+            'male-blue': { 'light': '#F0F7FF', 'border': '#1E3A8A', 'solid': '#1E3A8A' },
+            'female-pink': { 'light': '#FFF5F7', 'border': '#9D174D', 'solid': '#9D174D' }
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+          },
         }
-      };
-    </script>
-    <style>
-      /* Reset cơ bản để chặn scroll ở cấp độ cao nhất */
-      html {
-        height: 100%;
-        overflow: hidden;
       }
-
-      body {
-        position: fixed; /* Khóa body lại */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        overscroll-behavior: none;
-        -webkit-overflow-scrolling: touch;
-        background-color: #FDFBF7;
-        background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
-      }
-      
-      #root { 
-        width: 100%; 
-        height: 100%; 
-        overflow: hidden;
-      }
-
-      .react-flow__edge-path {
-        stroke-width: 3;
-        transition: all 0.3s ease;
-      }
-      
-      .blood-edge {
-        filter: drop-shadow(0 0 2px rgba(116, 27, 27, 0.4));
-      }
-
-      .react-flow__controls-button { border: none !important; background: white !important; }
-      
-      /* Ẩn scrollbar nhưng vẫn cho phép scroll nội dung con */
-      .no-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-    </style>
-    <script type="importmap">
-    {
-      "imports": {
-        "framer-motion": "https://esm.sh/framer-motion@^12.33.0",
-        "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-        "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-        "react/": "https://esm.sh/react@^19.2.4/",
-        "react": "https://esm.sh/react@^19.2.4",
-        "reactflow/": "https://esm.sh/reactflow@^11.11.4/",
-        "reactflow": "https://esm.sh/reactflow@^11.11.4",
-        "zustand": "https://esm.sh/zustand@^5.0.11",
-        "dagre": "https://esm.sh/dagre@^0.8.5"
-      }
+    };
+  </script>
+  <style>
+    html,
+    body,
+    #root {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #FDFBF7;
     }
-    </script>
-  <link rel="stylesheet" href="/index.css">
+
+    body {
+      background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+      overscroll-behavior: none;
+    }
+
+    .react-flow__edge-path {
+      stroke-width: 3;
+      transition: stroke 0.3s ease, stroke-width 0.3s ease, opacity 0.3s ease;
+    }
+
+    .blood-edge {
+      filter: none;
+      /* Removed expensive shadow during movement */
+    }
+
+    /* Optional: re-add shadow only when NOT moving, but CSS can't easily detect pan. 
+       Better to just use a clean line or a simpler stroke. */
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
 </head>
-  <body class="antialiased">
-    <div id="root"></div>
+
+<body class="antialiased font-sans">
+  <div id="root"></div>
   <script type="module" src="/src/index.tsx"></script>
 </body>
+
 </html>

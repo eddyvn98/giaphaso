@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { User, MapPin, Navigation, Heart } from 'lucide-react';
-import { Person } from '../../types';
+import { Person } from '@/types/types';
 import DateCard from './DateCard';
-import { useAppStore } from '../../store';
-import { getKinshipTerm } from '../../utils/kinship';
+import { useAppStore } from '@/store/store';
+import { getKinshipTerm } from '@/utils/kinship';
 
 interface InfoFormProps {
   formData: Partial<Person>;
@@ -43,7 +43,7 @@ const InfoForm: React.FC<InfoFormProps> = ({ formData, originalPerson, isEditing
         ) : (
           <h2 className="text-3xl font-serif font-bold text-stone-900 mb-1 leading-tight">{formData.fullName}</h2>
         )}
-        
+
         <div className="flex flex-wrap items-center gap-2 mt-2">
           <span className="text-heritage-gold font-bold text-[10px] uppercase tracking-[0.2em]">{formData.branch || 'Hậu duệ'}</span>
           <div className="h-1 w-1 bg-stone-300 rounded-full"></div>
@@ -52,66 +52,104 @@ const InfoForm: React.FC<InfoFormProps> = ({ formData, originalPerson, isEditing
 
         {/* Banner vai vế */}
         {!isEditing && kinship && (
-           <div className="mt-4 bg-heritage-red/5 border border-heritage-red/10 p-3 rounded-2xl flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-heritage-red/10 flex items-center justify-center text-heritage-red">
-                 <Heart size={16} fill="currentColor" className="opacity-80" />
-              </div>
-              <div>
-                <p className="text-[8px] uppercase font-bold text-stone-400 tracking-widest mb-0.5">Mối quan hệ với bạn</p>
-                <p className="text-sm font-bold text-heritage-red italic font-serif">{kinship}</p>
-              </div>
-           </div>
+          <div className="mt-4 bg-heritage-red/5 border border-heritage-red/10 p-3 rounded-2xl flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-heritage-red/10 flex items-center justify-center text-heritage-red">
+              <Heart size={16} fill="currentColor" className="opacity-80" />
+            </div>
+            <div>
+              <p className="text-[8px] uppercase font-bold text-stone-400 tracking-widest mb-0.5">Mối quan hệ với bạn</p>
+              <p className="text-sm font-bold text-heritage-red italic font-serif">{kinship}</p>
+            </div>
+          </div>
         )}
       </div>
 
       <div className="space-y-4">
-        <DateCard 
-          label="Ngày sinh" field="dob" isEditing={isEditing} 
-          dateInfo={formData.dob} onChange={(f, v) => updateField(f, v)} 
+        <DateCard
+          label="Ngày sinh" field="dob" isEditing={isEditing}
+          dateInfo={formData.dob} onChange={(f, v) => updateField(f, v)}
         />
 
         <div className="bg-white p-4 rounded-2xl shadow-sm border border-stone-100">
-          <div className="flex items-center gap-2 text-stone-400 text-[10px] uppercase font-bold mb-3 tracking-tighter">
-            <User size={12} className="text-heritage-red" /> Giới tính
-          </div>
-          {isEditing ? (
-            <div className="grid grid-cols-2 gap-2">
-              <button onClick={() => updateField('gender', 'male')}
-                className={`py-3 rounded-xl border text-sm font-bold transition-all ${formData.gender === 'male' ? 'bg-male-blue-solid text-white border-male-blue-solid' : 'bg-white text-stone-400 border-stone-200'}`}>
-                Nam giới
-              </button>
-              <button onClick={() => updateField('gender', 'female')}
-                className={`py-3 rounded-xl border text-sm font-bold transition-all ${formData.gender === 'female' ? 'bg-female-pink-solid text-white border-female-pink-solid' : 'bg-white text-stone-400 border-stone-200'}`}>
-                Nữ giới
-              </button>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-stone-400 text-[10px] uppercase font-bold tracking-tighter">
+              <User size={12} className="text-heritage-red" /> Giới tính
             </div>
-          ) : (
-            <p className="font-bold text-stone-800 text-sm">{formData.gender === 'male' ? 'Nam giới' : 'Nữ giới'}</p>
+            {isEditing && (
+              <div className="flex items-center gap-2 text-stone-400 text-[10px] uppercase font-bold tracking-tighter">
+                <Navigation size={12} className="text-heritage-gold" /> Thứ tự trong đời
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-12 gap-4 mt-3">
+            <div className={isEditing ? "col-span-8" : "col-span-12"}>
+              {isEditing ? (
+                <div className="grid grid-cols-2 gap-2">
+                  <button onClick={() => updateField('gender', 'male')}
+                    className={`py-3 rounded-xl border text-xs font-bold transition-all ${formData.gender === 'male' ? 'bg-male-blue-solid text-white border-male-blue-solid' : 'bg-white text-stone-400 border-stone-200'}`}>
+                    Nam
+                  </button>
+                  <button onClick={() => updateField('gender', 'female')}
+                    className={`py-3 rounded-xl border text-xs font-bold transition-all ${formData.gender === 'female' ? 'bg-female-pink-solid text-white border-female-pink-solid' : 'bg-white text-stone-400 border-stone-200'}`}>
+                    Nữ
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-[10px] text-stone-400 uppercase font-bold mb-1 tracking-tighter">Giới tính</p>
+                  <p className="font-bold text-stone-800 text-sm">{formData.gender === 'male' ? 'Nam giới' : 'Nữ giới'}</p>
+                </div>
+              )}
+            </div>
+
+            {isEditing && (
+              <div className="col-span-4">
+                <input
+                  type="number"
+                  min="1"
+                  value={formData.order || ''}
+                  onChange={(e) => updateField('order', parseInt(e.target.value) || undefined)}
+                  className="w-full py-3 rounded-xl border border-stone-200 text-center font-bold text-sm outline-none focus:border-heritage-gold/40 bg-stone-50"
+                  placeholder="Thứ..."
+                />
+              </div>
+            )}
+          </div>
+
+          {!isEditing && formData.order && (
+            <div className="mt-4 pt-4 border-t border-stone-50 flex items-center justify-between">
+              <div>
+                <p className="text-[10px] text-stone-400 uppercase font-bold mb-1 tracking-tighter">Thứ tự trong đời</p>
+                <p className="font-bold text-stone-800 text-sm">Con thứ {formData.order}</p>
+              </div>
+              <Navigation size={16} className="text-heritage-gold opacity-30 rotate-45" />
+            </div>
           )}
         </div>
 
         {!formData.isAlive && (
-           <div className="mt-4 animate-in fade-in slide-in-from-top-4 duration-500">
-              <div className="mb-4">
-                 <DateCard label="Ngày tạ thế" field="dod" isEditing={isEditing} dateInfo={formData.dod} onChange={(f, v) => updateField(f, v)} />
-              </div>
+          <div className="mt-4 animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="mb-4">
+              <DateCard label="Ngày tạ thế" field="dod" isEditing={isEditing} dateInfo={formData.dod} onChange={(f, v) => updateField(f, v)} />
+            </div>
 
-              <div className="bg-white p-4 rounded-2xl shadow-sm border border-stone-100">
-                <div className="flex items-start gap-3">
-                  <MapPin size={18} className="mt-0.5 flex-shrink-0 text-heritage-red" />
-                  <div className="flex-grow">
-                    <p className="text-xs text-stone-400 mb-2 uppercase font-bold tracking-tighter">Nơi an nghỉ (Mộ phần)</p>
-                    {isEditing ? (
-                      <textarea value={formData.burialAddress || ''} onChange={(e) => updateField('burialAddress', e.target.value)}
-                        placeholder="Vị trí phần mộ..." rows={2}
-                        className="w-full text-sm text-stone-800 font-medium leading-relaxed bg-stone-50 p-3 rounded-xl border border-stone-200 outline-none focus:border-heritage-red/40" />
-                    ) : (
-                      <p className="text-sm text-stone-800 font-medium leading-relaxed">{formData.burialAddress || 'Chưa cập nhật'}</p>
-                    )}
-                  </div>
+            <div className="bg-white p-4 rounded-2xl shadow-sm border border-stone-100">
+              <div className="flex items-start gap-3">
+                <MapPin size={18} className="mt-0.5 flex-shrink-0 text-heritage-red" />
+                <div className="flex-grow">
+                  <p className="text-xs text-stone-400 mb-2 uppercase font-bold tracking-tighter">Nơi an nghỉ (Mộ phần)</p>
+                  {isEditing ? (
+                    <textarea value={formData.burialAddress || ''} onChange={(e) => updateField('burialAddress', e.target.value)}
+                      placeholder="Vị trí phần mộ..." rows={2}
+                      className="w-full text-sm text-stone-800 font-medium leading-relaxed bg-stone-50 p-3 rounded-xl border border-stone-200 outline-none focus:border-heritage-red/40" />
+                  ) : (
+                    <p className="text-sm text-stone-800 font-medium leading-relaxed">{formData.burialAddress || 'Chưa cập nhật'}</p>
+                  )}
                 </div>
               </div>
-           </div>
+            </div>
+          </div>
         )}
 
         <div className="mt-6">
