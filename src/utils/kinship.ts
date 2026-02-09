@@ -1,5 +1,5 @@
 
-import { Person, Relationship } from '../types';
+import { Person, Relationship } from '@/types/types';
 
 /**
  * Tìm đường đi ngắn nhất giữa 2 người
@@ -38,7 +38,7 @@ export const findRelationshipPath = (
  * Xác định hướng của từng bước trong quan hệ
  */
 const getStepType = (from: string, to: string, relationships: Relationship[]) => {
-  const rel = relationships.find(r => 
+  const rel = relationships.find(r =>
     (r.source === from && r.target === to) || (r.source === to && r.target === from)
   );
   if (!rel) return null;
@@ -64,7 +64,7 @@ export const describePath = (
     const to = people.find(p => p.id === toId);
     if (!from || !to) continue;
 
-    const rel = relationships.find(r => 
+    const rel = relationships.find(r =>
       (r.source === fromId && r.target === toId) || (r.source === toId && r.target === fromId)
     );
 
@@ -92,9 +92,9 @@ export const describePath = (
  * Thuật toán xác định vai vế Việt Nam chính xác
  */
 export const getKinshipTerm = (
-  baseId: string, 
-  targetId: string, 
-  people: Person[], 
+  baseId: string,
+  targetId: string,
+  people: Person[],
   relationships: Relationship[]
 ): string => {
   if (baseId === targetId) return "Tôi";
@@ -111,14 +111,14 @@ export const getKinshipTerm = (
   let isLateral = false; // Quan hệ hàng ngang (anh em của cha mẹ)
 
   for (let i = 0; i < path.length - 1; i++) {
-    const step = getStepType(path[i], path[i+1], relationships);
+    const step = getStepType(path[i], path[i + 1], relationships);
     if (step === 'UP') genDelta++;
     if (step === 'DOWN') genDelta--;
     if (step === 'SPOUSE') hasSpouseStep = true;
-    
+
     // Nếu đi lên rồi đi xuống ngay -> Anh chị em hoặc Họ hàng hàng ngang
     if (i > 0) {
-      const prevStep = getStepType(path[i-1], path[i], relationships);
+      const prevStep = getStepType(path[i - 1], path[i], relationships);
       if (prevStep === 'UP' && step === 'DOWN') isLateral = true;
     }
   }
@@ -126,7 +126,7 @@ export const getKinshipTerm = (
   const isMale = target.gender === 'male';
 
   // --- LOGIC QUY ĐỔI DANH XƯNG ---
-  
+
   // 1. Cùng đời (Hàng ngang)
   if (genDelta === 0) {
     if (hasSpouseStep) return isMale ? "Chồng" : "Vợ";

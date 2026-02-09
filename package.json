@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:online": "node scripts/dev-online.cjs",
     "build": "vite build",
     "preview": "vite preview"
   },

@@ -1,12 +1,12 @@
 
 import dagre from 'dagre';
 import { Node, Edge, Position } from 'reactflow';
-import { Person, Relationship } from '../types';
+import { Person, Relationship } from '@/types/types';
 
 const nodeWidth = 140; // Khớp với CustomNode
-const nodeHeight = 190; 
-const rankSep = 200; 
-const nodeSep = 100;  
+const nodeHeight = 190;
+const rankSep = 200;
+const nodeSep = 100;
 
 export const getLayoutedElements = (
   nodes: Node[],
@@ -16,7 +16,7 @@ export const getLayoutedElements = (
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-  dagreGraph.setGraph({ 
+  dagreGraph.setGraph({
     rankdir: direction,
     ranksep: rankSep,
     nodesep: nodeSep,
@@ -57,18 +57,18 @@ export const transformDataToFlow = (
   maxVisibleLevel: number
 ) => {
   const personLevels: Record<string, number> = {};
-  
+
   const calculateLevels = () => {
     const roots = people.filter(p => !relationships.some(r => r.target === p.id && r.type === 'blood'));
-    
+
     const traverse = (id: string, level: number) => {
       if (personLevels[id] !== undefined && personLevels[id] <= level) return;
       personLevels[id] = level;
-      
+
       relationships.filter(r => r.source === id && r.type === 'blood').forEach(r => {
         traverse(r.target, level + 1);
       });
-      
+
       relationships.filter(r => (r.source === id || r.target === id) && r.type === 'spouse').forEach(r => {
         const spouseId = r.source === id ? r.target : r.source;
         if (personLevels[spouseId] === undefined) {
@@ -91,8 +91,8 @@ export const transformDataToFlow = (
   const nodes: Node[] = filteredPeople.map((person) => ({
     id: person.id,
     type: 'custom',
-    data: { 
-      person, 
+    data: {
+      person,
       onNodeClick,
       onAddClick,
       onDeleteClick
@@ -104,7 +104,7 @@ export const transformDataToFlow = (
     .filter(rel => filteredPeopleIds.has(rel.source) && filteredPeopleIds.has(rel.target))
     .map((rel) => {
       const isSpouse = rel.type === 'spouse';
-      
+
       return {
         id: rel.id,
         source: rel.source,
@@ -114,11 +114,11 @@ export const transformDataToFlow = (
         targetHandle: isSpouse ? 'left' : 'top',
         type: isSpouse ? 'simplebezier' : 'smoothstep',
         className: isSpouse ? 'spouse-edge' : 'blood-edge',
-        style: { 
-            stroke: isSpouse ? '#B08D3E' : '#741B1B', 
-            strokeWidth: isSpouse ? 2 : 4, 
-            strokeDasharray: isSpouse ? '6 4' : '0',
-            opacity: isSpouse ? 0.6 : 1
+        style: {
+          stroke: isSpouse ? '#B08D3E' : '#741B1B',
+          strokeWidth: isSpouse ? 2 : 4,
+          strokeDasharray: isSpouse ? '6 4' : '0',
+          opacity: isSpouse ? 0.6 : 1
         },
       };
     });

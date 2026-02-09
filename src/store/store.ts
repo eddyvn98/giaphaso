@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Person, Relationship } from '@/types/types';
-import { familyService } from '@/services/familyService';
+import { fetchFamilyData } from '@/services/family/fetchFamily';
+import { addFamilyMember, deleteFamilyMember } from '@/services/family/mutateFamily';
 
 interface AppState {
   people: Person[];
@@ -57,7 +58,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   initialize: async () => {
     set({ isLoading: true, error: null });
     try {
-      const { people, relationships } = await familyService.fetchAll();
+      const { people, relationships } = await fetchFamilyData();
       set({ people, relationships, isLoading: false });
     } catch (err: any) {
       set({ error: err.message, isLoading: false });
@@ -94,7 +95,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   addPerson: async (person, sourceId, targetId, spouseId) => {
     try {
-      await familyService.addPerson(person, sourceId, targetId, spouseId);
+      await addFamilyMember(person, sourceId, targetId, spouseId);
       await get().initialize(); // Refresh
     } catch (err: any) {
       set({ error: err.message });
@@ -103,7 +104,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   deletePerson: async (id) => {
     try {
-      await familyService.deletePerson(id);
+      await deleteFamilyMember(id);
       await get().initialize(); // Refresh
       if (get().selectedPersonId === id) set({ selectedPersonId: null, isBottomSheetOpen: false });
     } catch (err: any) {
